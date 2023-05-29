@@ -1,0 +1,2 @@
+# Rozporoszone
+ Programowanie Rozproszone Krasnale
