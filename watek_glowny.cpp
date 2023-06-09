@@ -6,6 +6,7 @@ void mainLoop()
     srandom(rank);
     int tag;
     int perc;
+    int size = 4;
 
     while (stan != InFinish) {
 	switch (stan) {
@@ -15,7 +16,7 @@ void mainLoop()
 		    debug("Perc: %d", perc);
 		    println("Ubiegam się o sekcję krytyczną")
 		    debug("Zmieniam stan na wysyłanie");
-		    packet_t *pkt = malloc(sizeof(packet_t));
+		    packet_t *pkt = new packet_t;
 		    pkt->data = perc;
 		    ackCount = 0;
 
@@ -28,7 +29,7 @@ void mainLoop()
 					   // między okienkami skaczesz ctrl+w i strzałki, albo ctrl+ww
 					   // okienko zamyka się :q
 					   // ZOB. regułę tags: w Makefile (naciśnij gf gdy kursor jest na nazwie pliku)
-		    free(pkt);
+		    delete pkt;
 		} // a skoro już jesteśmy przy komendach vi, najedź kursorem na } i wciśnij %  (niestety głupieje przy komentarzach :( )
 		debug("Skończyłem myśleć");
 		break;
@@ -54,17 +55,15 @@ void mainLoop()
 		    debug("Perc: %d", perc);
 		    println("Wychodzę z sekcji krytyczneh")
 		    debug("Zmieniam stan na wysyłanie");
-		    packet_t *pkt = malloc(sizeof(packet_t));
+		    packet_t *pkt = new packet_t;
 		    pkt->data = perc;
 		    for (int i=0;i<=size-1;i++)
 			if (i!=rank)
 			    sendPacket( pkt, i, RELEASE);
 			    //sendPacket( pkt, (rank+1)%size, RELEASE);
 		    changeState( InRun );
-		    free(pkt);
+		    delete pkt;
 		//}
-		break;
-	    default:
 		break;
             }
         sleep(SEC_IN_STATE);

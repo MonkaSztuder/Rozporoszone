@@ -56,7 +56,7 @@ void inicjuj_typ_pakietu()
 void sendPacket(packet_t *pkt, int destination, int tag)
 {
     int freepkt=0;
-    if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}
+    if (pkt==0) { pkt = new packet_t; freepkt=1;}
     pthread_mutex_lock( &stateMut );
     lamport+=1;
     pthread_mutex_unlock( &stateMut );
@@ -65,7 +65,7 @@ void sendPacket(packet_t *pkt, int destination, int tag)
     pkt->src = rank;
     MPI_Send( pkt, 1, MPI_PAKIET_T, destination, tag, MPI_COMM_WORLD);
     debug("Wysyłam %s do %d\n", tag2string( tag), destination);
-    if (freepkt) free(pkt);
+    if (freepkt) delete pkt;
 }
 
 void changeState( state_t newState )
