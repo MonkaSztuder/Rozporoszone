@@ -4,33 +4,34 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-ACK	util.h	16;"	d
-APP_PKT	util.h	19;"	d
-FALSE	main.h	13;"	d
-FINISH	util.h	20;"	d
+ACK	util.h	17;"	d
+APP_PKT	util.h	20;"	d
+FALSE	main.h	15;"	d
+FINISH	util.h	21;"	d
 FLAGS	Makefile	/^FLAGS=-DDEBUG -g$/;"	m
 HEADERS	Makefile	/^HEADERS=$(SOURCES:.cpp=.h)$/;"	m
-InFinish	util.h	/^typedef enum {InRun, InMonitor, InWant, InSection, InFinish} state_t;$/;"	e	enum:__anon2
-InMonitor	util.h	/^typedef enum {InRun, InMonitor, InWant, InSection, InFinish} state_t;$/;"	e	enum:__anon2
-InRun	util.h	/^typedef enum {InRun, InMonitor, InWant, InSection, InFinish} state_t;$/;"	e	enum:__anon2
-InSection	util.h	/^typedef enum {InRun, InMonitor, InWant, InSection, InFinish} state_t;$/;"	e	enum:__anon2
-InWant	util.h	/^typedef enum {InRun, InMonitor, InWant, InSection, InFinish} state_t;$/;"	e	enum:__anon2
+InFinish	util.h	/^    InFinish$/;"	e	enum:__anon2
+InMonitor	util.h	/^    InMonitor,$/;"	e	enum:__anon2
+InRun	util.h	/^    InRun,$/;"	e	enum:__anon2
+InSection	util.h	/^    InSection,$/;"	e	enum:__anon2
+InWant	util.h	/^    InWant,$/;"	e	enum:__anon2
 MPI_PAKIET_T	util.cpp	/^MPI_Datatype MPI_PAKIET_T;$/;"	v
-NITEMS	util.h	12;"	d
-RELEASE	util.h	18;"	d
-REQUEST	util.h	17;"	d
-ROOT	main.h	17;"	d
-SEC_IN_STATE	main.h	14;"	d
+NITEMS	util.h	13;"	d
+RELEASE	util.h	19;"	d
+REQUEST	util.h	18;"	d
+ROOT	main.h	19;"	d
+SEC_IN_STATE	main.h	16;"	d
 SOURCES	Makefile	/^SOURCES=$(wildcard *.cpp)$/;"	m
-STATE_CHANGE_PROB	main.h	15;"	d
-TRUE	main.h	12;"	d
+STATE_CHANGE_PROB	main.h	17;"	d
+TRUE	main.h	14;"	d
 WATEK_KOMUNIKACYJNY_H	watek_komunikacyjny.h	3;"	d
 ackCount	main.cpp	/^int ackCount = 0;$/;"	v
-changeState	util.cpp	/^void changeState( state_t newState )$/;"	f
+changeState	util.cpp	/^void changeState(state_t newState)$/;"	f
 check_thread_support	main.cpp	/^void check_thread_support(int provided)$/;"	f
-data	util.h	/^    int data;     \/* przykładowe pole z danymi; można zmienić nazwę na bardziej pasującą *\/$/;"	m	struct:__anon1
-debug	main.h	49;"	d
-debug	main.h	51;"	d
+compare	util.cpp	/^bool compare(const std::pair<int, int> &pair1, const std::pair<int, int> &pair2)$/;"	f
+data	util.h	/^    int data; \/* przykładowe pole z danymi; można zmienić nazwę na bardziej pasującą *\/$/;"	m	struct:__anon1
+debug	main.h	52;"	d
+debug	main.h	54;"	d
 finalizuj	main.cpp	/^void finalizuj()$/;"	f
 get_lab	setupmpi.txt	/^function get_lab() {$/;"	f
 header	setupmpi.txt	/^function header$/;"	f
@@ -38,27 +39,28 @@ inicjuj_typ_pakietu	util.cpp	/^void inicjuj_typ_pakietu()$/;"	f
 init_env	setupmpi.txt	/^function init_env() {$/;"	f
 init_ssh	setupmpi.txt	/^function init_ssh() {$/;"	f
 init_student	setupmpi.txt	/^function init_student() { #$/;"	f
-lamport	util.cpp	/^int lamport=0;$/;"	v
+lamport	util.cpp	/^int lamport = 0;$/;"	v
 main	main.cpp	/^int main(int argc, char **argv)$/;"	f
 mainLoop	watek_glowny.cpp	/^void mainLoop()$/;"	f
 name	util.cpp	/^    const char *name;$/;"	m	struct:tagNames_t	file:
 packet_t	util.h	/^} packet_t;$/;"	t	typeref:struct:__anon1
 printerr	setupmpi.txt	/^function printerr$/;"	f
-println	main.h	55;"	d
+println	main.h	58;"	d
 rank	main.cpp	/^int rank, size;$/;"	v
 sendPacket	util.cpp	/^void sendPacket(packet_t *pkt, int destination, int tag)$/;"	f
 shaded_line	setupmpi.txt	/^function shaded_line$/;"	f
 size	main.cpp	/^int rank, size;$/;"	v
-src	util.h	/^    int src;  $/;"	m	struct:__anon1
-stan	util.cpp	/^state_t stan=InRun;$/;"	v
+sort_kolejka	util.cpp	/^void sort_kolejka(std::vector<std::pair<int, int>> *v)$/;"	f
+src	util.h	/^    int src;$/;"	m	struct:__anon1
+stan	util.cpp	/^state_t stan = InRun;$/;"	v
 startKomWatek	watek_komunikacyjny.cpp	/^void *startKomWatek(void *ptr)$/;"	f
 stateMut	util.cpp	/^pthread_mutex_t stateMut = PTHREAD_MUTEX_INITIALIZER;$/;"	v
-state_t	util.h	/^typedef enum {InRun, InMonitor, InWant, InSection, InFinish} state_t;$/;"	t	typeref:enum:__anon2
+state_t	util.h	/^} state_t;$/;"	t	typeref:enum:__anon2
 tag	util.cpp	/^    int tag;$/;"	m	struct:tagNames_t	file:
-tag2string	util.cpp	/^const char *const tag2string( int tag )$/;"	f
-tagNames	util.cpp	/^} tagNames[] = { { "pakiet aplikacyjny", APP_PKT }, { "finish", FINISH}, $/;"	v	typeref:struct:tagNames_t
-tagNames_t	util.cpp	/^struct tagNames_t{$/;"	s	file:
+tag2string	util.cpp	/^const char *const tag2string(int tag)$/;"	f
+tagNames	util.cpp	/^} tagNames[] = {{"pakiet aplikacyjny", APP_PKT}, {"finish", FINISH}, {"potwierdzenie", ACK}, {"prośbę o sekcję krytyczną", REQUEST}, {"zwolnienie sekcji krytycznej", RELEASE}};$/;"	v	typeref:struct:tagNames_t
+tagNames_t	util.cpp	/^struct tagNames_t$/;"	s	file:
 threadKom	main.cpp	/^pthread_t threadKom;$/;"	v
-ts	util.h	/^    int ts;       \/* timestamp (zegar lamporta *\/$/;"	m	struct:__anon1
+ts	util.h	/^    int ts; \/* timestamp (zegar lamporta *\/$/;"	m	struct:__anon1
 update_repo	setupmpi.txt	/^function update_repo() {$/;"	f
 warn	setupmpi.txt	/^function warn$/;"	f

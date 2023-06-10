@@ -12,7 +12,11 @@ void *startKomWatek(void *ptr)
     {
         debug("czekam na recv");
         MPI_Recv(&pakiet, 1, MPI_PAKIET_T, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-        lamport_earlier = lamport;
+        if (stan == InRun)
+        {
+            lamport_earlier = lamport;
+        }
+        // lamport_earlier = lamport;
         if (pakiet.ts > lamport)
         {
             lamport = pakiet.ts;
@@ -21,8 +25,8 @@ void *startKomWatek(void *ptr)
 
         switch (status.MPI_TAG)
         {
-         case REQUEST:
-            debug("Ktoś coś prosi. A niech ma!") if (stan == InRun || (stan == InWant && pakiet.ts <= lamport_earlier))
+        case REQUEST:
+            if (stan == InRun || (stan == InWant && pakiet.ts <= lamport_earlier))
             {
                 if (pakiet.ts == lamport_earlier && status.MPI_SOURCE > rank)
                     break;
