@@ -21,6 +21,7 @@ RELEASE	util.h	19;"	d
 REQUEST	util.h	18;"	d
 ROOT	main.h	19;"	d
 SEC_IN_STATE	main.h	16;"	d
+SKANSENY_H	skanseny.h	2;"	d
 SOURCES	Makefile	/^SOURCES=$(wildcard *.cpp)$/;"	m
 STATE_CHANGE_PROB	main.h	17;"	d
 TRUE	main.h	14;"	d
@@ -33,6 +34,7 @@ data	util.h	/^    int data; \/* przykładowe pole z danymi; można zmienić nazw
 debug	main.h	54;"	d
 debug	main.h	56;"	d
 finalizuj	main.cpp	/^void finalizuj()$/;"	f
+generuj_zlecenia	skanseny.cpp	/^void generuj_zlecenia(int id_skansenu)$/;"	f
 get_lab	setupmpi.txt	/^function get_lab() {$/;"	f
 header	setupmpi.txt	/^function header$/;"	f
 inicjuj_typ_pakietu	util.cpp	/^void inicjuj_typ_pakietu()$/;"	f
