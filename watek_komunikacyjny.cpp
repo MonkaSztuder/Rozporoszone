@@ -5,8 +5,15 @@ void *startKomWatek(void *ptr)
 {
     MPI_Status status;
     int is_message = FALSE;
+    pthread_mutex_t stateMut = PTHREAD_MUTEX_INITIALIZER;
     packet_t pakiet;
     int lamport_earlier;
+    // id_skansenu; zlecienie
+    std::vector<std::pair<int, int>> kolejka_zlecen;
+    // id_krasnala; lamport_krasnala
+    std::vector<std::pair<int, int>> kolejka_krasnali;
+    // id_krasnala; lamport_krasnala
+    std::vector<std::pair<int, int>> kolejka_do_portali;
     // / Obrazuje pętlę odbierającą pakiety o różnych typach /
     while (stan != InFinish)
     {
@@ -22,7 +29,10 @@ void *startKomWatek(void *ptr)
             lamport = pakiet.ts;
         }
         lamport++;
-
+        if (stan == InRun)
+        {
+            ackCount = 0;
+        }
         switch (status.MPI_TAG)
         {
         case REQUEST:
@@ -31,16 +41,26 @@ void *startKomWatek(void *ptr)
                 if (pakiet.ts == lamport_earlier && status.MPI_SOURCE > rank)
                     break;
                 printf("%d Dostałem REQ od %d, odesłałem\n", rank, status.MPI_SOURCE);
+                kolejka_krasnali.push_back(std::make_pair(status.MPI_SOURCE, pakiet.ts));
+                printf("Kolejka krasnali: \n");
+                print_kolejka(&kolejka_krasnali);
+                sort_kolejka(&kolejka_krasnali);
+                printf("Kolejka krasnali po sort: \n");
+                print_kolejka(&kolejka_krasnali);
                 sendPacket(0, status.MPI_SOURCE, ACK);
             }
             break;
         case ACK:
             debug("Dostałem ACK od %d, mam już %d", status.MPI_SOURCE, ackCount);
+                pthread_mutex_lock(&stateMut);
             ackCount++; // czy potrzeba tutaj muteksa? Będzie wyścig, czy nie będzie? Zastanówcie się. /
+                pthread_mutex_unlock(&stateMut);
+
             break;
         case RELEASE:
             debug("Dostałem RELEASE od %d, mam już %d", status.MPI_SOURCE, ackCount);
             ackCount++; // czy potrzeba tutaj muteksa? Będzie wyścig, czy nie będzie? Zastanówcie się. */
+            kolejka_krasnali.erase(std::remove(kolejka_krasnali.begin(), kolejka_krasnali.end(), std::make_pair(status.MPI_SOURCE, pakiet.ts)), kolejka_krasnali.end());
 
             break;
         default:

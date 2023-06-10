@@ -99,3 +99,11 @@ void sort_kolejka(std::vector<std::pair<int, int>> *v)
 {
     std::sort(v->begin(), v->end(), compare);
 }
+
+void print_kolejka(std::vector<std::pair<int, int>> *v)
+{
+    for (int i = 0; i < v->size(); i++)
+    {
+        printf("%d %d\n", v->at(i).first, v->at(i).second);
+    }
+}

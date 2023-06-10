@@ -42,3 +42,5 @@ void changeState(state_t);
 bool compare(const std::pair<int, int> &pair1, const std::pair<int, int> &pair2);
 
 void sort_kolejka(std::vector<std::pair<int, int>> *v);
+
+void print_kolejka(std::vector<std::pair<int, int>> *v);

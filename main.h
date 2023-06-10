@@ -25,9 +25,11 @@ extern int ackCount;
 extern int lamport;
 extern pthread_t threadKom;
 
+// id_skansenu; zlecienie
+extern std::vector<std::pair<int, int>> kolejka_zlecen;
 // id_krasnala; lamport_krasnala
-extern std::vector<int> kolejka_zlecen;
 extern std::vector<std::pair<int, int>> kolejka_krasnali;
+// id_krasnala; lamport_krasnala
 extern std::vector<std::pair<int, int>> kolejka_do_portali;
 
 /* macro debug - działa jak printf, kiedy zdefiniowano

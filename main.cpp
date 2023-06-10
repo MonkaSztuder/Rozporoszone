@@ -28,6 +28,7 @@ int ackCount = 0;
 
 pthread_t threadKom;
 
+
 void finalizuj()
 {
     pthread_mutex_destroy( &stateMut);
