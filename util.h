@@ -20,6 +20,16 @@ typedef struct
 #define APP_PKT 4
 #define FINISH 5
 
+#define ZLECENIE 6
+#define ZLECENIEZABRANE 66
+#define REQUESTK 22
+#define RELEASEK 33
+#define ACKP 11
+
+#define S 2
+#define K 4
+#define P 4
+
 extern MPI_Datatype MPI_PAKIET_T;
 void inicjuj_typ_pakietu();
 

@@ -21,10 +21,6 @@ int ackCount = 0;
  *
  */
 
-//lamport zegar
-//wyswietlanie w makrach
-//send packet zmieniac lamporta i podbijac
-//odbieranie pakietu 
 
 pthread_t threadKom;
 

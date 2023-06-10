@@ -1,5 +1,6 @@
 #include "main.h"
 #include "watek_glowny.h"
+#include "skanseny.h"
 
 void mainLoop()
 {
@@ -7,11 +8,18 @@ void mainLoop()
     int tag;
     int perc;
     int size = 4;
+	int zostanSkansenemTemp;
 
     while (stan != InFinish) {
 	switch (stan) {
 	    case InRun:
 		perc = random()%100;
+		zostanSkansenemTemp = random()%100;
+		if(zostanSkansenemTemp < 20){
+			int skansen_id = random()%S;
+			generuj_zlecenia(skansen_id);
+			break;
+		}
 		if ( perc < 25 ) {
 		    debug("Perc: %d", perc);
 		    println("Ubiegam się o sekcję krytyczną")
