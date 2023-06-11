@@ -20,7 +20,7 @@ struct tagNames_t
 {
     const char *name;
     int tag;
-} tagNames[] = {{"pakiet aplikacyjny", APP_PKT}, {"finish", FINISH}, {"potwierdzenie", ACK}, {"prośbę o sekcję krytyczną", REQUEST}, {"zwolnienie sekcji krytycznej", RELEASE}};
+} tagNames[] = {{"pakiet aplikacyjny", APP_PKT}, {"finish", FINISH}, {"potwierdzenie", ACK}, {"prośbę o sekcję krytyczną", REQUEST}, {"zwolnienie sekcji krytycznej", RELEASE},{"prośba o wpisanie do kolejki kranslai", REQUESTK},{"Opuszczenie kolejki krasnali",RELEASEK}};
 
 const char *const tag2string(int tag)
 {
@@ -40,13 +40,14 @@ void inicjuj_typ_pakietu()
        brzydzimy się czymś w rodzaju MPI_Send(&typ, sizeof(pakiet_t), MPI_BYTE....
     */
     /* sklejone z stackoverflow */
-    int blocklengths[NITEMS] = {1, 1, 1};
-    MPI_Datatype typy[NITEMS] = {MPI_INT, MPI_INT, MPI_INT};
+    int blocklengths[NITEMS] = {1, 1, 1,1};
+    MPI_Datatype typy[NITEMS] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT};
 
     MPI_Aint offsets[NITEMS];
     offsets[0] = offsetof(packet_t, ts);
     offsets[1] = offsetof(packet_t, src);
     offsets[2] = offsetof(packet_t, data);
+    offsets[3] = offsetof(packet_t, task);
 
     MPI_Type_create_struct(NITEMS, blocklengths, offsets, typy, &MPI_PAKIET_T);
 
@@ -54,7 +55,7 @@ void inicjuj_typ_pakietu()
 }
 
 /* opis patrz util.h */
-void sendPacket(packet_t *pkt, int destination, int tag)
+void sendPacket(packet_t *pkt, int destination, int tag,int inc)
 {
     int freepkt = 0;
     if (pkt == 0)
@@ -62,9 +63,13 @@ void sendPacket(packet_t *pkt, int destination, int tag)
         pkt = new packet_t;
         freepkt = 1;
     }
-    pthread_mutex_lock(&stateMut);
-    lamport += 1;
-    pthread_mutex_unlock(&stateMut);
+    if(inc == 1)
+    {
+        pthread_mutex_lock(&stateMut);
+        lamport += 1;
+        pthread_mutex_unlock(&stateMut);
+    }
+
     pkt->ts = lamport;
 
     pkt->src = rank;
@@ -101,9 +106,47 @@ void sort_kolejka(std::vector<std::pair<int, int>> *v)
 }
 
 void print_kolejka(std::vector<std::pair<int, int>> *v)
-{
+{        printf("\n");
     for (int i = 0; i < v->size(); i++)
     {
-        printf("%d %d\n", v->at(i).first, v->at(i).second);
+
+        printf("[%d] %d %d\n", rank, v->at(i).first, v->at(i).second);
+
+    }        printf("\n");
+}
+
+void usun_z_kolejki(std::vector<std::pair<int, int>> *v, int id){
+    for (int i = 0; i < v->size(); i++)
+    {
+        if(v->at(i).first == id){
+            v->erase(v->begin() + i);
+            break;
+        }
     }
 }
+
+int checkOlder()
+{
+    int counter = 0;
+    for(int i = 1;i < K + 1; i++)
+    {
+        if(timestamps[i] > timestamps[rank])
+        {
+            counter++;
+        }
+    }
+    return counter;
+}
+
+int which_in_queue(std::vector<std::pair<int, int>> *v, int id)
+{
+    for(int i = 0;i <  v->size() ;i++)
+    {
+        if(v->at(i).first == id)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+

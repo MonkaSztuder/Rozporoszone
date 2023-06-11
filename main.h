@@ -15,7 +15,6 @@
 #define FALSE 0
 #define SEC_IN_STATE 1
 #define STATE_CHANGE_PROB 10
-
 #define ROOT 0
 
 /* tutaj TYLKO zapowiedzi - definicje w main.c */
@@ -23,8 +22,8 @@ extern int rank;
 extern int size;
 extern int ackCount;
 extern int lamport;
+extern int id_zlecenia;
 extern pthread_t threadKom;
-
 // id_skansenu; zlecienie
 extern std::vector<std::pair<int, int>> kolejka_zlecen;
 // id_krasnala; lamport_krasnala
@@ -32,6 +31,7 @@ extern std::vector<std::pair<int, int>> kolejka_krasnali;
 // id_krasnala; lamport_krasnala
 extern std::vector<std::pair<int, int>> kolejka_do_portali;
 
+extern int timestamps[6];
 /* macro debug - działa jak printf, kiedy zdefiniowano
    DEBUG, kiedy DEBUG niezdefiniowane działa jak instrukcja pusta
 

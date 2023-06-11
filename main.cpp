@@ -2,7 +2,7 @@
 #include "main.h"
 #include "watek_glowny.h"
 #include "watek_komunikacyjny.h"
-
+#include "watek_zlecen.h"
 /*
  * W main.h extern int rank (zapowiedź) w main.c int rank (definicja)
  * Zwróćcie uwagę, że każdy proces ma osobą pamięć, ale w ramach jednego
@@ -13,6 +13,7 @@
  */
 int rank, size;
 int ackCount = 0;
+int id_zlecenia = -1;
 //int lamport = 0; //1
 /* 
  * Każdy proces ma dwa wątki - główny i komunikacyjny
@@ -20,10 +21,16 @@ int ackCount = 0;
  *
  *
  */
+    // id_skansenu; zlecienie
+    std::vector<std::pair<int, int>> kolejka_zlecen;
+    // id_krasnala; lamport_krasnala
+    std::vector<std::pair<int, int>> kolejka_krasnali;
+    // id_krasnala; lamport_krasnala
+    std::vector<std::pair<int, int>> kolejka_do_portali;
 
-
+    int timestamps[6] = {0};
 pthread_t threadKom;
-
+pthread_t threadSkansen;
 
 void finalizuj()
 {
@@ -64,9 +71,11 @@ int main(int argc, char **argv)
 {
     MPI_Status status;
     int provided;
+    
     MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
     check_thread_support(provided);
     srand(rank);
+
     /* zob. util.c oraz util.h */
     inicjuj_typ_pakietu(); // tworzy typ pakietu
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -75,13 +84,22 @@ int main(int argc, char **argv)
      * w vi najedź kursorem na nazwę pliku i wciśnij klawisze gf
      * powrót po wciśnięciu ctrl+6
      * */
-    pthread_create( &threadKom, NULL, startKomWatek , 0);
+    if(rank == 0)
+    {
+        skansen();
+    }
+    else
+    {
+        pthread_create( &threadKom, NULL, startKomWatek , 0);
+        mainLoop();
+    }
+
 
     /* mainLoop w watek_glowny.c 
      * w vi najedź kursorem na nazwę pliku i wciśnij klawisze gf
      * powrót po wciśnięciu ctrl+6
      * */
-    mainLoop(); // możesz także wcisnąć ctrl-] na nazwie funkcji
+ // możesz także wcisnąć ctrl-] na nazwie funkcji
 		// działa, bo używamy ctags (zob Makefile)
 		// jak nie działa, wpisz set tags=./tags :)
     
