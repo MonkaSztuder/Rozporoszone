@@ -27,7 +27,7 @@ typedef struct
 
 #define S 5
 #define K 7
-#define P 2
+#define P 5
 
 extern MPI_Datatype MPI_PAKIET_T;
 void inicjuj_typ_pakietu();

@@ -6,6 +6,7 @@ void *startKomWatek(void *ptr)
     MPI_Status status;
     int is_message = FALSE;
     pthread_mutex_t stateMut = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_t lampMut = PTHREAD_MUTEX_INITIALIZER;
     packet_t pakiet;
     int lamport_earlier;
     int zlecenia_count = 0;

@@ -3,7 +3,7 @@
 
 void mainLoop()
 {
-	srandom(rank);
+	srand(rank);
 	int tag;
 	int perc;
 
@@ -29,7 +29,7 @@ void mainLoop()
 				timestamps[rank] = lamport;
 				pthread_mutex_unlock(&lampMut);
 
-				for (int i = 0; i <= size - 1; i++)
+				for (int i = 1; i <= size - 1; i++)
 					if (i != rank)
 						sendPacket(pkt, i, REQUESTK, timestamps[rank]);
 				changeState(InWant);
@@ -45,15 +45,15 @@ void mainLoop()
 			println("Czekam na wziecie zlecenia i wejscie do kolejki do portali");
 			while (TRUE)
 			{
-
-				/*if(rank == 3 || rank == 5 || rank == 4)
-				{
-					print_kolejka(&kolejka_krasnali);
-					printf("ja to %d moj checkOlder to %d kolejka kranslia pierwszy to %d musze miec K - 2 = %d , kolejka zlecen size to %ld\n",rank,checkOlder(),kolejka_krasnali[0].first,K - 2,kolejka_zlecen.size());
-					for(int i = 1; i < K + 1; i++)
-					printf("%d,",timestamps[i]);
-					printf("\n");
-				}*/
+				/*
+							//	if(rank == 3 || rank == 5)
+							//	{
+									print_kolejka(&kolejka_krasnali);
+									printf("ja to %d moj checkOlder to %d kolejka kranslia pierwszy to %d musze miec K - 2 = %d , kolejka zlecen size to %ld\n",rank,checkOlder(),kolejka_krasnali[0].first,K - 2,kolejka_zlecen.size());
+									for(int i = 1; i < K + 1; i++)
+									printf("%d,",timestamps[i]);
+									printf("\n");
+							//	} */
 
 				// print_kolejka(&kolejka_krasnali);
 
@@ -90,6 +90,7 @@ void mainLoop()
 			pthread_mutex_unlock(&lampMut);
 
 			kolejka_do_portali.push_back(std::make_pair(rank, timestamps[rank]));
+			sort_kolejka(&kolejka_do_portali);
 			for (int i = 1; i <= size - 1; i++)
 			{
 				if (i != rank)
@@ -113,7 +114,7 @@ void mainLoop()
 			// printf("jestem %d w kolejce do portali\n", which_in_queue(&kolejka_do_portali,rank));
 			while (TRUE)
 			{
-				if (checkOlder() >= K - 2 - P + 1 && which_in_queue(&kolejka_do_portali, rank) < P)
+				if (checkOlder() >= (K - 2 - P + 1) && which_in_queue(&kolejka_do_portali, rank) < P)
 				{
 					changeState(InSection);
 					break;
@@ -133,6 +134,7 @@ void mainLoop()
 			pkt->data = id_zlecenia;
 			pthread_mutex_lock(&lampMut);
 			lamport += 1;
+
 			pthread_mutex_unlock(&lampMut);
 
 			for (int i = 1; i <= size - 1; i++)
@@ -141,11 +143,12 @@ void mainLoop()
 			// sendPacket( pkt, (rank+1)%size, RELEASE);
 			changeState(InRun);
 			delete pkt;
-
+			sleep(2);
+			usun_z_kolejki(&kolejka_do_portali, rank);
+			sleep(2);
 			//}
 			gathered = -1;
 			id_zlecenia = -1;
-			usun_z_kolejki(&kolejka_do_portali, rank);
 
 			break;
 		}
