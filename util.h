@@ -22,13 +22,11 @@ typedef struct
 #define FINISH 5
 
 #define ZLECENIE 6
-#define ZLECENIEZABRANE 66
 #define REQUESTK 22
-#define RELEASEK 33
 #define ACKP 11
 
 #define S 5
-#define K 5
+#define K 7
 #define P 2
 
 extern MPI_Datatype MPI_PAKIET_T;
@@ -48,6 +46,8 @@ typedef enum
 } state_t;
 extern state_t stan;
 extern pthread_mutex_t stateMut;
+extern pthread_mutex_t lampMut;
+
 /* zmiana stanu, obwarowana muteksem */
 void changeState(state_t);
 

@@ -11,8 +11,7 @@
  * ale zob util.c oraz util.h - zmienną state_t state i funkcję changeState
  *
  */
-int rank, size;
-int ackCount = 0;
+int rank, size, id_skansenu;
 int id_zlecenia = -1;
 //int lamport = 0; //1
 /* 
@@ -28,7 +27,7 @@ int id_zlecenia = -1;
     // id_krasnala; lamport_krasnala
     std::vector<std::pair<int, int>> kolejka_do_portali;
 
-    int timestamps[6] = {0};
+    int timestamps[K + 1] = {0};
 pthread_t threadKom;
 pthread_t threadSkansen;
 
@@ -75,7 +74,7 @@ int main(int argc, char **argv)
     MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
     check_thread_support(provided);
     srand(rank);
-
+	
     /* zob. util.c oraz util.h */
     inicjuj_typ_pakietu(); // tworzy typ pakietu
     MPI_Comm_size(MPI_COMM_WORLD, &size);

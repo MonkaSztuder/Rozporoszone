@@ -15,12 +15,13 @@ int lamport = 0;
  * być obwarowany muteksami
  */
 pthread_mutex_t stateMut = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t lampMut = PTHREAD_MUTEX_INITIALIZER;
 
 struct tagNames_t
 {
     const char *name;
     int tag;
-} tagNames[] = {{"pakiet aplikacyjny", APP_PKT}, {"finish", FINISH}, {"potwierdzenie", ACK}, {"prośbę o sekcję krytyczną", REQUEST}, {"zwolnienie sekcji krytycznej", RELEASE},{"prośba o wpisanie do kolejki kranslai", REQUESTK},{"Opuszczenie kolejki krasnali",RELEASEK}};
+} tagNames[] = {{"pakiet aplikacyjny", APP_PKT}, {"finish", FINISH}, {"potwierdzenie", ACK}, {"prośbę o sekcję krytyczną", REQUEST}, {"zwolnienie sekcji krytycznej", RELEASE}, {"prośba o wpisanie do kolejki kranslai", REQUESTK}};
 
 const char *const tag2string(int tag)
 {
@@ -40,7 +41,7 @@ void inicjuj_typ_pakietu()
        brzydzimy się czymś w rodzaju MPI_Send(&typ, sizeof(pakiet_t), MPI_BYTE....
     */
     /* sklejone z stackoverflow */
-    int blocklengths[NITEMS] = {1, 1, 1,1};
+    int blocklengths[NITEMS] = {1, 1, 1, 1};
     MPI_Datatype typy[NITEMS] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT};
 
     MPI_Aint offsets[NITEMS];
@@ -55,28 +56,32 @@ void inicjuj_typ_pakietu()
 }
 
 /* opis patrz util.h */
-void sendPacket(packet_t *pkt, int destination, int tag,int inc)
+void sendPacket(packet_t *pkt, int destination, int tag, int inc)
 {
+    pthread_mutex_lock(&lampMut);
+
     int freepkt = 0;
     if (pkt == 0)
     {
         pkt = new packet_t;
         freepkt = 1;
     }
-    if(inc == 1)
+    if (inc == 0)
     {
-        pthread_mutex_lock(&stateMut);
         lamport += 1;
-        pthread_mutex_unlock(&stateMut);
+        pkt->ts = lamport;
     }
-
-    pkt->ts = lamport;
+    else
+    {
+        pkt->ts = inc;
+    }
 
     pkt->src = rank;
     MPI_Send(pkt, 1, MPI_PAKIET_T, destination, tag, MPI_COMM_WORLD);
     debug("Wysyłam %s do %d\n", tag2string(tag), destination);
     if (freepkt)
         delete pkt;
+    pthread_mutex_unlock(&lampMut);
 }
 
 void changeState(state_t newState)
@@ -106,19 +111,22 @@ void sort_kolejka(std::vector<std::pair<int, int>> *v)
 }
 
 void print_kolejka(std::vector<std::pair<int, int>> *v)
-{        printf("\n");
+{
+    printf("ja %d \n", rank);
     for (int i = 0; i < v->size(); i++)
     {
 
         printf("[%d] %d %d\n", rank, v->at(i).first, v->at(i).second);
-
-    }        printf("\n");
+    }
+    printf("\n");
 }
 
-void usun_z_kolejki(std::vector<std::pair<int, int>> *v, int id){
+void usun_z_kolejki(std::vector<std::pair<int, int>> *v, int id)
+{
     for (int i = 0; i < v->size(); i++)
     {
-        if(v->at(i).first == id){
+        if (v->at(i).first == id)
+        {
             v->erase(v->begin() + i);
             break;
         }
@@ -128,9 +136,13 @@ void usun_z_kolejki(std::vector<std::pair<int, int>> *v, int id){
 int checkOlder()
 {
     int counter = 0;
-    for(int i = 1;i < K + 1; i++)
+    for (int i = 1; i < K + 1; i++)
     {
-        if(timestamps[i] > timestamps[rank])
+        if (timestamps[i] > timestamps[rank])
+        {
+            counter++;
+        }
+        else if (timestamps[i] == timestamps[rank] && i > rank)
         {
             counter++;
         }
@@ -140,13 +152,12 @@ int checkOlder()
 
 int which_in_queue(std::vector<std::pair<int, int>> *v, int id)
 {
-    for(int i = 0;i <  v->size() ;i++)
+    for (int i = 0; i < v->size(); i++)
     {
-        if(v->at(i).first == id)
+        if (v->at(i).first == id)
         {
             return i;
         }
     }
     return -1;
 }
-

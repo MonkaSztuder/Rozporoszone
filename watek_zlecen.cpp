@@ -1,7 +1,5 @@
 #include "main.h"
 #include "watek_zlecen.h"
-#include "skanseny.h"
-
 
 void skansen()
 {
@@ -10,10 +8,10 @@ void skansen()
     while (TRUE)
     {
         id_skan = random()%S;
-        sleep(2);
+        usleep(1000000);
         packet_t *pkt = new packet_t;
         pkt->data = id_zlec;
-        pkt->ts = id_skan;
+        pkt->task = id_skan;
         for (int i = 1; i <= size-1; i++)
             sendPacket(pkt, i, ZLECENIE,0);
         delete pkt;
