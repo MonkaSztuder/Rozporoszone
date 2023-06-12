@@ -166,8 +166,8 @@ bool usun_z_kolejki(std::vector<std::pair<int, int>> *v, int id)
             }
         }
     }
-    if (znal == 0)
-        printf("nie ma takiego id %d\n", id);
+    //if (znal == 0)
+        //printf("nie ma takiego id %d\n", id);
     pthread_mutex_unlock(&modyfikacjaKolejkiMut);
     return false;
 }
