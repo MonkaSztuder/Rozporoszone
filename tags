@@ -7,7 +7,7 @@
 ACK	util.h	18;"	d
 ACKP	util.h	26;"	d
 APP_PKT	util.h	21;"	d
-FALSE	main.h	15;"	d
+FALSE	main.h	17;"	d
 FINISH	util.h	22;"	d
 FLAGS	Makefile	/^FLAGS=-g$/;"	m
 HEADERS	Makefile	/^HEADERS=$(SOURCES:.cpp=.h)$/;"	m
@@ -24,12 +24,12 @@ P	util.h	30;"	d
 RELEASE	util.h	20;"	d
 REQUEST	util.h	19;"	d
 REQUESTK	util.h	25;"	d
-ROOT	main.h	18;"	d
+ROOT	main.h	20;"	d
 S	util.h	28;"	d
-SEC_IN_STATE	main.h	16;"	d
+SEC_IN_STATE	main.h	18;"	d
 SOURCES	Makefile	/^SOURCES=$(wildcard *.cpp)$/;"	m
-STATE_CHANGE_PROB	main.h	17;"	d
-TRUE	main.h	14;"	d
+STATE_CHANGE_PROB	main.h	19;"	d
+TRUE	main.h	16;"	d
 WATEK_KOMUNIKACYJNY_H	watek_komunikacyjny.h	3;"	d
 ZLECENIE	util.h	24;"	d
 changeState	util.cpp	/^void changeState(state_t newState)$/;"	f
@@ -37,8 +37,9 @@ checkOlder	util.cpp	/^int checkOlder()$/;"	f
 check_thread_support	main.cpp	/^void check_thread_support(int provided)$/;"	f
 compare	util.cpp	/^bool compare(const std::pair<int, int> &pair1, const std::pair<int, int> &pair2)$/;"	f
 data	util.h	/^    int data; \/* przykładowe pole z danymi; można zmienić nazwę na bardziej pasującą *\/$/;"	m	struct:__anon1
-debug	main.h	54;"	d
 debug	main.h	56;"	d
+debug	main.h	58;"	d
+dodaj_do_kolejki	util.cpp	/^void dodaj_do_kolejki(std::vector<std::pair<int, int>> *v, int id, int ts)$/;"	f
 finalizuj	main.cpp	/^void finalizuj()$/;"	f
 get_lab	setupmpi.txt	/^function get_lab() {$/;"	f
 header	setupmpi.txt	/^function header$/;"	f
@@ -48,18 +49,19 @@ inicjuj_typ_pakietu	util.cpp	/^void inicjuj_typ_pakietu()$/;"	f
 init_env	setupmpi.txt	/^function init_env() {$/;"	f
 init_ssh	setupmpi.txt	/^function init_ssh() {$/;"	f
 init_student	setupmpi.txt	/^function init_student() { #$/;"	f
-kolejka_do_portali	main.cpp	/^    std::vector<std::pair<int, int>> kolejka_do_portali;$/;"	v
-kolejka_krasnali	main.cpp	/^    std::vector<std::pair<int, int>> kolejka_krasnali;$/;"	v
-kolejka_zlecen	main.cpp	/^    std::vector<std::pair<int, int>> kolejka_zlecen;$/;"	v
+kolejka_do_portali	main.cpp	/^std::vector<std::pair<int, int>> kolejka_do_portali;$/;"	v
+kolejka_krasnali	main.cpp	/^std::vector<std::pair<int, int>> kolejka_krasnali;$/;"	v
+kolejka_zlecen	main.cpp	/^std::vector<std::pair<int, int>> kolejka_zlecen;$/;"	v
 lampMut	util.cpp	/^pthread_mutex_t lampMut = PTHREAD_MUTEX_INITIALIZER;$/;"	v
 lamport	util.cpp	/^int lamport = 0;$/;"	v
 main	main.cpp	/^int main(int argc, char **argv)$/;"	f
 mainLoop	watek_glowny.cpp	/^void mainLoop()$/;"	f
+modyfikacjaKolejkiMut	util.cpp	/^pthread_mutex_t modyfikacjaKolejkiMut = PTHREAD_MUTEX_INITIALIZER;$/;"	v
 name	util.cpp	/^    const char *name;$/;"	m	struct:tagNames_t	file:
 packet_t	util.h	/^} packet_t;$/;"	t	typeref:struct:__anon1
 print_kolejka	util.cpp	/^void print_kolejka(std::vector<std::pair<int, int>> *v)$/;"	f
 printerr	setupmpi.txt	/^function printerr$/;"	f
-println	main.h	60;"	d
+println	main.h	62;"	d
 rank	main.cpp	/^int rank, size, id_skansenu;$/;"	v
 sendPacket	util.cpp	/^void sendPacket(packet_t *pkt, int destination, int tag, int inc)$/;"	f
 shaded_line	setupmpi.txt	/^function shaded_line$/;"	f
@@ -77,10 +79,9 @@ tagNames	util.cpp	/^} tagNames[] = {{"pakiet aplikacyjny", APP_PKT}, {"finish", 
 tagNames_t	util.cpp	/^struct tagNames_t$/;"	s	file:
 task	util.h	/^    int task;$/;"	m	struct:__anon1
 threadKom	main.cpp	/^pthread_t threadKom;$/;"	v
-threadSkansen	main.cpp	/^pthread_t threadSkansen;$/;"	v
-timestamps	main.cpp	/^    int timestamps[K + 1] = {0};$/;"	v
+timestamps	main.cpp	/^int timestamps[K + 1] = {0};$/;"	v
 ts	util.h	/^    int ts; \/* timestamp (zegar lamporta *\/$/;"	m	struct:__anon1
 update_repo	setupmpi.txt	/^function update_repo() {$/;"	f
-usun_z_kolejki	util.cpp	/^void usun_z_kolejki(std::vector<std::pair<int, int>> *v, int id)$/;"	f
+usun_z_kolejki	util.cpp	/^bool usun_z_kolejki(std::vector<std::pair<int, int>> *v, int id)$/;"	f
 warn	setupmpi.txt	/^function warn$/;"	f
 which_in_queue	util.cpp	/^int which_in_queue(std::vector<std::pair<int, int>> *v, int id)$/;"	f

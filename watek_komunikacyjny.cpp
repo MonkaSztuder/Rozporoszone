@@ -5,20 +5,22 @@ void *startKomWatek(void *ptr)
 {
     MPI_Status status;
     int is_message = FALSE;
-    pthread_mutex_t stateMut = PTHREAD_MUTEX_INITIALIZER;
-    pthread_mutex_t lampMut = PTHREAD_MUTEX_INITIALIZER;
+    // pthread_mutex_t stateMut = PTHREAD_MUTEX_INITIALIZER;
+    // pthread_mutex_t lampMut = PTHREAD_MUTEX_INITIALIZER;
     packet_t pakiet;
     int lamport_earlier;
     int zlecenia_count = 0;
 
     // / Obrazuje pętlę odbierającą pakiety o różnych typach /
-    while (stan != InFinish)
+    while (stan != InFinish )
     {
         debug("czekam na recv");
         MPI_Recv(&pakiet, 1, MPI_PAKIET_T, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         if (stan == InRun)
         {
+            pthread_mutex_lock(&lampMut);
             lamport_earlier = lamport;
+            pthread_mutex_unlock(&lampMut);
         }
         // lamport_earlier = lamport;
         if (status.MPI_SOURCE != 0)
@@ -43,10 +45,20 @@ void *startKomWatek(void *ptr)
             debug("Dostałem REQ od %d", status.MPI_SOURCE);
             if (pakiet.task != -1)
                 id_zlecenia = pakiet.task;
-            kolejka_do_portali.push_back(std::make_pair(status.MPI_SOURCE, pakiet.ts));
+
+            // kolejka_do_portali.push_back(std::make_pair(status.MPI_SOURCE, pakiet.ts));
+            dodaj_do_kolejki(&kolejka_do_portali, status.MPI_SOURCE, pakiet.ts);
             sort_kolejka(&kolejka_do_portali);
+            // printf("Ja %d usuwam %d z kolejki zlecen\n", rank, pakiet.data);
+            // while (!usun_z_kolejki(&kolejka_zlecen, pakiet.data))
+            //{
             usun_z_kolejki(&kolejka_zlecen, pakiet.data);
+            //}
+            // printf("Ja %d usuwam %d z kolejki krasnali\n", rank, status.MPI_SOURCE);
+            // while (!usun_z_kolejki(&kolejka_krasnali, status.MPI_SOURCE))
+            //{
             usun_z_kolejki(&kolejka_krasnali, status.MPI_SOURCE);
+            //}
             if (stan != InPortalQueue)
                 sendPacket(0, status.MPI_SOURCE, ACK, 0);
             break;
@@ -58,19 +70,26 @@ void *startKomWatek(void *ptr)
         case RELEASE:
             // zwolnienie kolejki do portali
             debug("Dostałem RELEASE od %d", status.MPI_SOURCE);
+            // printf("Ja %d usuwam %d z kolejki do portali\n", rank, status.MPI_SOURCE);
+            // while (!usun_z_kolejki(&kolejka_do_portali, status.MPI_SOURCE))
+            //{
             usun_z_kolejki(&kolejka_do_portali, status.MPI_SOURCE);
+            //}
             break;
 
         case ZLECENIE:
             debug("Dostałem ZLECENIE od %d", pakiet.data);
-            kolejka_zlecen.push_back(std::make_pair(pakiet.data, pakiet.task));
+            // printf("Ja %d dodaje %d do kolejki zlecen\n", rank, pakiet.data);
+            // kolejka_zlecen.push_back(std::make_pair(pakiet.data, pakiet.task));
+            dodaj_do_kolejki(&kolejka_zlecen, pakiet.data, pakiet.task);
             // dostanie nowego zlecenia
             break;
 
         case REQUESTK:
             debug("Dostałem REQUESTK od %d", status.MPI_SOURCE);
 
-            kolejka_krasnali.push_back(std::make_pair(status.MPI_SOURCE, pakiet.ts));
+            // kolejka_krasnali.push_back(std::make_pair(status.MPI_SOURCE, pakiet.ts));
+            dodaj_do_kolejki(&kolejka_krasnali, status.MPI_SOURCE, pakiet.ts);
             sort_kolejka(&kolejka_krasnali);
             if (stan != InWant)
                 sendPacket(0, status.MPI_SOURCE, ACK, 0);

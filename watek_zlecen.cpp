@@ -8,7 +8,7 @@ void skansen()
     while (TRUE)
     {
         id_skan = random()%S;
-        usleep(5000);
+        usleep(500000);
         packet_t *pkt = new packet_t;
         pkt->data = id_zlec;
         pkt->task = id_skan;

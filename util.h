@@ -27,7 +27,7 @@ typedef struct
 
 #define S 5
 #define K 7
-#define P 5
+#define P 3
 
 extern MPI_Datatype MPI_PAKIET_T;
 void inicjuj_typ_pakietu();
@@ -47,6 +47,7 @@ typedef enum
 extern state_t stan;
 extern pthread_mutex_t stateMut;
 extern pthread_mutex_t lampMut;
+extern pthread_mutex_t modyfikacjaKolejkiMut;
 
 /* zmiana stanu, obwarowana muteksem */
 void changeState(state_t);
@@ -57,7 +58,9 @@ void sort_kolejka(std::vector<std::pair<int, int>> *v);
 
 void print_kolejka(std::vector<std::pair<int, int>> *v);
 
-void usun_z_kolejki(std::vector<std::pair<int, int>> *v, int id);
+bool usun_z_kolejki(std::vector<std::pair<int, int>> *v, int id);
 
-int which_in_queue(std::vector<std::pair<int, int>> *v, int id);
+int which_in_queue(std::vector<std::pair<int, int>>* v, int id);
 int checkOlder();
+
+void dodaj_do_kolejki(std::vector<std::pair<int, int>> *v, int id, int ts);

@@ -16,6 +16,7 @@ int lamport = 0;
  */
 pthread_mutex_t stateMut = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lampMut = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t modyfikacjaKolejkiMut = PTHREAD_MUTEX_INITIALIZER;
 
 struct tagNames_t
 {
@@ -107,7 +108,31 @@ bool compare(const std::pair<int, int> &pair1, const std::pair<int, int> &pair2)
 
 void sort_kolejka(std::vector<std::pair<int, int>> *v)
 {
-    std::sort(v->begin(), v->end(), compare);
+    if (v == nullptr)
+    {
+        // Obsługa przypadku, gdy wskaźnik na wektor jest nieprawidłowy
+        return;
+    }
+
+    if (v->empty())
+    {
+        // Obsługa przypadku, gdy wektor jest pusty
+        return;
+    }
+
+    // Sprawdzenie poprawności indeksów przed sortowaniem
+    for (const auto &pair : *v)
+    {
+        if (pair.first < 0 || pair.first >= v->size())
+        {
+            // Obsługa przypadku, gdy indeks jest nieprawidłowy
+            return;
+        }
+    }
+
+    pthread_mutex_lock(&modyfikacjaKolejkiMut);
+    std::sort(v->begin(), v->end() - 1, compare);
+    pthread_mutex_unlock(&modyfikacjaKolejkiMut);
 }
 
 void print_kolejka(std::vector<std::pair<int, int>> *v)
@@ -115,22 +140,36 @@ void print_kolejka(std::vector<std::pair<int, int>> *v)
     printf("ja %d \n", rank);
     for (int i = 0; i < v->size(); i++)
     {
-
-        printf("[%d] %d %d\n", rank, v->at(i).first, v->at(i).second);
+        if (i < v->size())
+            printf("[%d] %d %d\n", rank, v->at(i).first, v->at(i).second);
     }
     printf("\n");
 }
 
-void usun_z_kolejki(std::vector<std::pair<int, int>> *v, int id)
+bool usun_z_kolejki(std::vector<std::pair<int, int>> *v, int id)
 {
+    int znal = 0;
+    pthread_mutex_lock(&modyfikacjaKolejkiMut);
+    // printf("vektor %ld\n", v->size());
+
     for (int i = 0; i < v->size(); i++)
     {
         if (v->at(i).first == id)
         {
-            v->erase(v->begin() + i);
-            break;
+            if (i < v->size())
+            {
+                // printf("vektor w petli %ld begin %ld\n", v->size(), v->begin());
+                v->erase(v->begin() + i);
+                // printf("vektor po usunieciu %ld ZLICZ %d\n", v->size(),znal);
+                pthread_mutex_unlock(&modyfikacjaKolejkiMut);
+                return true;
+            }
         }
     }
+    if (znal == 0)
+        printf("nie ma takiego id %d\n", id);
+    pthread_mutex_unlock(&modyfikacjaKolejkiMut);
+    return false;
 }
 
 int checkOlder()
@@ -152,12 +191,27 @@ int checkOlder()
 
 int which_in_queue(std::vector<std::pair<int, int>> *v, int id)
 {
-    for (int i = 0; i < v->size(); i++)
+    //printf("size %ld\n", v->size());
+    pthread_mutex_lock(&modyfikacjaKolejkiMut);
+    for (int i = 0; i < v->size(); i++) // iteracja po vectorze
     {
+        //printf("znalazlem %d size %ld i %d\n", id, v->size(), i);
+
         if (v->at(i).first == id)
         {
-            return i;
+            pthread_mutex_unlock(&modyfikacjaKolejkiMut);
+            return i; // zwraca pozycje w kolejce
         }
     }
-    return -1;
+    pthread_mutex_unlock(&modyfikacjaKolejkiMut);
+    return -1; // nie ma w kolejce
+}
+
+void dodaj_do_kolejki(std::vector<std::pair<int, int>> *v, int id, int ts)
+{
+    // printf("dodaje do kolejki %d %d SIZE %ld\n", id, ts, v->size());
+    pthread_mutex_lock(&modyfikacjaKolejkiMut);
+    v->push_back(std::make_pair(id, ts));
+    pthread_mutex_unlock(&modyfikacjaKolejkiMut);
+    // printf("dodalem do kolejki %d %d SIZE %ld\n", id, ts, v->size());
 }
